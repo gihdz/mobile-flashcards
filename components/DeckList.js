@@ -1,16 +1,25 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 
 import styled from 'styled-components';
 
 class DeckList extends React.Component {
+  renderItem = ({ item }) => {
+    return <DeckRow key={item.title} deck={item} />;
+  };
   render() {
     const { decks } = this.props;
-    const decksRow = Object.keys(decks).map(d => (
-      <DeckRow key={d} deck={decks[d]} />
-    ));
-    return decksRow;
+    // const decksRow = Object.keys(decks).map(d => (
+    //   <DeckRow key={d} deck={decks[d]} />
+    // ));
+    return (
+      <FlatList
+        style={{ flex: 1 }}
+        data={Object.keys(decks).map(d => decks[d])}
+        renderItem={this.renderItem}
+      />
+    );
   }
 }
 const DeckRow = ({ deck }) => {
