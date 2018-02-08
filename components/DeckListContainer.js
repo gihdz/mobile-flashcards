@@ -8,10 +8,10 @@ const StyledDeckListContainer = styled.View`
   flex: 1;
 `;
 
-const DeckListContainer = () => {
+const DeckListContainer = ({ navigation }) => {
   return (
     <StyledDeckListContainer>
-      <DeckList />
+      <DeckList navigation={navigation} />
     </StyledDeckListContainer>
   );
 };

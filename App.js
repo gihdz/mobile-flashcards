@@ -9,6 +9,7 @@ import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import reducer from './reducers';
 import DeckListContainer from './components/DeckListContainer';
 import NewDeck from './components/NewDeck';
+import DeckView from './components/DeckView';
 
 const Tabs = TabNavigator(
   {
@@ -54,16 +55,16 @@ const Tabs = TabNavigator(
 const MainNavigator = StackNavigator({
   Home: {
     screen: Tabs
+  },
+  DeckView: {
+    screen: DeckView
+    // navigationOptions: {
+    //   headerTintColor: white,
+    //   headerStyle: {
+    //     backgroundColor: purple
+    //   }
+    // }
   }
-  // EntryDetail: {
-  //   screen: EntryDetail,
-  //   navigationOptions: {
-  //     headerTintColor: white,
-  //     headerStyle: {
-  //       backgroundColor: purple
-  //     }
-  //   }
-  // }
 });
 
 export default class App extends React.Component {
@@ -85,7 +86,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff'
-    // alignItems: 'center',
-    // justifyContent: 'center'
   }
 });

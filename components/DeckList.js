@@ -1,12 +1,18 @@
 import React from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 
 import styled from 'styled-components';
 
 class DeckList extends React.Component {
   renderItem = ({ item }) => {
-    return <DeckRow key={item.title} deck={item} />;
+    return (
+      <DeckRow
+        key={item.title}
+        deck={item}
+        navigation={this.props.navigation}
+      />
+    );
   };
   render() {
     const { decks } = this.props;
@@ -19,13 +25,17 @@ class DeckList extends React.Component {
     );
   }
 }
-const DeckRow = ({ deck }) => {
+const DeckRow = ({ deck, navigation }) => {
   const { title, questions } = deck;
   return (
-    <StyledDeckRow>
-      <StyledDeckTitle>{title}</StyledDeckTitle>
-      <StyledCardsText>{questions.length} cards</StyledCardsText>
-    </StyledDeckRow>
+    <TouchableOpacity
+      onPress={() => navigation.navigate('DeckView', { entryId: title })}
+    >
+      <StyledDeckRow>
+        <StyledDeckTitle>{title}</StyledDeckTitle>
+        <StyledCardsText>{questions.length} cards</StyledCardsText>
+      </StyledDeckRow>
+    </TouchableOpacity>
   );
 };
 const mapStateToProps = state => {
