@@ -6,14 +6,12 @@ import styled from 'styled-components';
 
 class DeckList extends React.Component {
   renderItem = ({ item }) => {
-    return (
-      <DeckRow
-        key={item.title}
-        deck={item}
-        navigation={this.props.navigation}
-      />
-    );
+    return <DeckRow deck={item} navigation={this.props.navigation} />;
   };
+  componentDidMount() {
+    const { navigation } = this.props;
+    navigation.navigate('DeckView', { entryId: 'React' });
+  }
   render() {
     const { decks } = this.props;
     return (
@@ -21,6 +19,7 @@ class DeckList extends React.Component {
         style={{ flex: 1 }}
         data={Object.keys(decks).map(d => decks[d])}
         renderItem={this.renderItem}
+        keyExtractor={item => item.title}
       />
     );
   }
