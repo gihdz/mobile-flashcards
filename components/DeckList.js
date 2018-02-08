@@ -10,9 +10,6 @@ class DeckList extends React.Component {
   };
   render() {
     const { decks } = this.props;
-    // const decksRow = Object.keys(decks).map(d => (
-    //   <DeckRow key={d} deck={decks[d]} />
-    // ));
     return (
       <FlatList
         style={{ flex: 1 }}
