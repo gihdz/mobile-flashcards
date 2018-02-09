@@ -12,7 +12,7 @@ class DeckView extends React.Component {
     };
   };
   render() {
-    const { deck } = this.props;
+    const { deck, navigation } = this.props;
     const { title, questions } = deck;
     return (
       <StyledDeckView>
@@ -25,6 +25,9 @@ class DeckView extends React.Component {
             <Text>Add Card</Text>
           </StyledTouchableOpacity>
           <StyledTouchableOpacity
+            onPress={() => {
+              navigation.navigate('Quiz', { entryId: title });
+            }}
             style={{
               marginTop: 15,
               backgroundColor: '#000'
