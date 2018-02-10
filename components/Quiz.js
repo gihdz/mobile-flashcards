@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView
+} from 'react-native';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
@@ -59,15 +65,39 @@ class Quiz extends React.Component {
         break;
     }
   };
+  resetQuiz = () => {
+    this.setState({ correctAnswers: 0, showAnswer: false, step: 0 });
+  };
+  _renderSummary() {
+    const { questions } = this.props.deck;
+    const { correctAnswers } = this.state;
+    const { navigation } = this.props;
+
+    return (
+      <SummaryView>
+        <View>
+          <MainText>{`You got ${correctAnswers} correct answers out of ${
+            questions.length
+          } questions!`}</MainText>
+        </View>
+        <ButtonsContainer style={{ marginTop: 25 }}>
+          <SummaryButton onPress={this.resetQuiz}>
+            <Text>Start Over</Text>
+          </SummaryButton>
+          <SummaryButton
+            style={{ marginTop: 10 }}
+            onPress={() => navigation.goBack()}
+          >
+            <Text>Back to Deck</Text>
+          </SummaryButton>
+        </ButtonsContainer>
+      </SummaryView>
+    );
+  }
   render() {
     const { questions } = this.props.deck;
     const { step } = this.state;
-    if (step === questions.length)
-      return (
-        <View>
-          <Text>{JSON.stringify(this.state)}</Text>
-        </View>
-      );
+    if (step === questions.length) return this._renderSummary();
 
     const view = this._renderContent();
     return (
@@ -77,18 +107,18 @@ class Quiz extends React.Component {
         </View>
         {view}
         <ButtonsContainer>
-          <Button
+          <StyledTouchableOpacity
             style={{ backgroundColor: 'green' }}
             onPress={() => this.onBtnPress('correct')}
           >
             <StyledText>Correct</StyledText>
-          </Button>
-          <Button
+          </StyledTouchableOpacity>
+          <StyledTouchableOpacity
             style={{ backgroundColor: 'red', marginTop: 10 }}
             onPress={() => this.onBtnPress('incorrect')}
           >
             <StyledText>Incorrect</StyledText>
-          </Button>
+          </StyledTouchableOpacity>
         </ButtonsContainer>
       </View>
     );
@@ -104,15 +134,24 @@ const mapStateToProps = (state, { navigation }) => {
   };
 };
 export default connect(mapStateToProps)(Quiz);
-const ButtonsContainer = styled.View`
-  align-items: center;
-`;
-const Button = styled.TouchableOpacity`
+
+const ButtonStyle = `
   width: 200px;
   height: 60px;
   border-radius: 5px;
   align-items: center;
   justify-content: center;
+`;
+
+const ButtonsContainer = styled.View`
+  align-items: center;
+`;
+
+const StyledTouchableOpacity = styled.TouchableOpacity`
+  ${ButtonStyle};
+`;
+const SummaryButton = styled.TouchableOpacity`
+  ${ButtonStyle} border: 2px solid;
 `;
 const StyledText = styled.Text`
   color: #fff;
@@ -139,4 +178,10 @@ const AnswerQuestionText = styled.Text`
   font-size: 20px;
   color: red;
   font-weight: 700;
+`;
+const SummaryView = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
 `;
