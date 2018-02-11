@@ -1,13 +1,21 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView
-} from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import {
+  Container,
+  Header,
+  Button,
+  Segment,
+  Content,
+  Text,
+  List,
+  ListItem,
+  Right,
+  Icon,
+  Left,
+  Body
+} from 'native-base';
 
 class Quiz extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -18,8 +26,17 @@ class Quiz extends React.Component {
   state = {
     step: 0,
     showAnswer: false,
-    correctAnswers: 0
+    correctAnswers: 0,
+    selectedIndex: 0,
+    summaryAnswers: []
   };
+  async componentWillMount() {
+    await Expo.Font.loadAsync({
+      Roboto: require('native-base/Fonts/Roboto.ttf'),
+      Roboto_medium: require('native-base/Fonts/Roboto_medium.ttf')
+    });
+  }
+
   _renderContent() {
     const { deck } = this.props;
     const { showAnswer, step } = this.state;
@@ -45,13 +62,23 @@ class Quiz extends React.Component {
       </MainContent>
     );
   }
-  check = () => {};
+  saveAnswer = answered => {
+    const { step, summaryAnswers } = this.state;
+    const { questions } = this.props.deck;
+    const question = questions[step];
+    const sm = summaryAnswers.concat({
+      ...question,
+      answered
+    });
+    this.setState({ summaryAnswers: sm });
+  };
   onBtnPress = type => {
     const { step, correctAnswers } = this.state;
     const { deck } = this.props;
 
     switch (type) {
       case 'correct':
+        this.saveAnswer(true);
         this.setState({
           step: step + 1,
           correctAnswers: correctAnswers + 1,
@@ -59,6 +86,7 @@ class Quiz extends React.Component {
         });
         break;
       case 'incorrect':
+        this.saveAnswer(false);
         this.setState({ step: step + 1, showAnswer: false });
         break;
       default:
@@ -66,31 +94,90 @@ class Quiz extends React.Component {
     }
   };
   resetQuiz = () => {
-    this.setState({ correctAnswers: 0, showAnswer: false, step: 0 });
+    this.setState({
+      correctAnswers: 0,
+      showAnswer: false,
+      step: 0,
+      summaryAnswers: []
+    });
+  };
+  selectIndex = selectedIndex => {
+    this.setState({ selectedIndex });
+  };
+  _renderSummaryContent = () => {
+    const { navigation } = this.props;
+    const { summaryAnswers } = this.state;
+    const { questions } = this.props.deck;
+
+    const { selectedIndex, correctAnswers } = this.state;
+    switch (selectedIndex) {
+      case 0:
+        return (
+          <View>
+            <View>
+              <MainText>{`You got ${correctAnswers} correct answers out of ${
+                questions.length
+              } questions!`}</MainText>
+            </View>
+            <ButtonsContainer style={{ marginTop: 25 }}>
+              <SummaryButton onPress={this.resetQuiz}>
+                <Text>Start Over</Text>
+              </SummaryButton>
+              <SummaryButton
+                style={{ marginTop: 10 }}
+                onPress={() => navigation.goBack()}
+              >
+                <Text>Back to Deck</Text>
+              </SummaryButton>
+            </ButtonsContainer>
+          </View>
+        );
+      case 1:
+        return (
+          <View>
+            <List
+              dataArray={summaryAnswers}
+              renderRow={item => {
+                const icon = item.answered ? 'md-checkmark' : 'md-close';
+                const color = item.answered ? 'green' : 'red';
+                return (
+                  <ListItem icon>
+                    <Body>
+                      <Text>{item.question}</Text>
+                    </Body>
+                    <Right>
+                      <Icon name={icon} style={{ color }} />
+                    </Right>
+                  </ListItem>
+                );
+              }}
+            />
+          </View>
+        );
+    }
   };
   _renderSummary() {
-    const { questions } = this.props.deck;
-    const { correctAnswers } = this.state;
-    const { navigation } = this.props;
+    const { selectedIndex } = this.state;
 
     return (
       <SummaryView>
-        <View>
-          <MainText>{`You got ${correctAnswers} correct answers out of ${
-            questions.length
-          } questions!`}</MainText>
-        </View>
-        <ButtonsContainer style={{ marginTop: 25 }}>
-          <SummaryButton onPress={this.resetQuiz}>
-            <Text>Start Over</Text>
-          </SummaryButton>
-          <SummaryButton
-            style={{ marginTop: 10 }}
-            onPress={() => navigation.goBack()}
+        <Segment>
+          <Button
+            first
+            active={selectedIndex === 0}
+            onPress={() => this.selectIndex(0)}
           >
-            <Text>Back to Deck</Text>
-          </SummaryButton>
-        </ButtonsContainer>
+            <Text>Info</Text>
+          </Button>
+          <Button
+            last
+            active={selectedIndex === 1}
+            onPress={() => this.selectIndex(1)}
+          >
+            <Text>Questions</Text>
+          </Button>
+        </Segment>
+        <Content padder>{this._renderSummaryContent()}</Content>
       </SummaryView>
     );
   }
@@ -181,7 +268,4 @@ const AnswerQuestionText = styled.Text`
 `;
 const SummaryView = styled.View`
   flex: 1;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
 `;
