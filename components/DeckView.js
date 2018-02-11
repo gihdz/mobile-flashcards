@@ -21,7 +21,11 @@ class DeckView extends React.Component {
           <StyledCardsText>{questions.length} cards</StyledCardsText>
         </Body>
         <ButtonsContainer>
-          <StyledTouchableOpacity>
+          <StyledTouchableOpacity
+            onPress={() => {
+              navigation.navigate('NewCard', { title });
+            }}
+          >
             <Text>Add Card</Text>
           </StyledTouchableOpacity>
           <StyledTouchableOpacity

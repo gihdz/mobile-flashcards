@@ -9,8 +9,8 @@ class DeckList extends React.Component {
     return <DeckRow deck={item} navigation={this.props.navigation} />;
   };
   componentDidMount() {
-    const { navigation } = this.props;
-    navigation.navigate('NewDeck');
+    // const { navigation } = this.props;
+    // navigation.navigate('NewDeck');
   }
   render() {
     const { decks } = this.props;

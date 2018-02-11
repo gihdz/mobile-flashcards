@@ -11,6 +11,7 @@ import DeckListContainer from './components/DeckListContainer';
 import NewDeck from './components/NewDeck';
 import DeckView from './components/DeckView';
 import Quiz from './components/Quiz';
+import NewCard from './components/NewCard';
 
 const Tabs = TabNavigator(
   {
@@ -59,6 +60,9 @@ const MainNavigator = StackNavigator({
   },
   Quiz: {
     screen: Quiz
+  },
+  NewCard: {
+    screen: NewCard
   },
   DeckView: {
     screen: DeckView

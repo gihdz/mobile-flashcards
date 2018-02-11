@@ -32,7 +32,7 @@ export default (state = defaultState, action) => {
     case ADD_DECK:
       return {
         ...state,
-        ['decks']: {
+        decks: {
           ...state.decks,
           [action.title]: {
             title: action.title,
@@ -42,14 +42,21 @@ export default (state = defaultState, action) => {
       };
       break;
     case ADD_CARD:
-      const questions = [
-        ...state[title].questions,
-        { question: action.question, answer: action.answer }
-      ];
-      const deck = { ...state[title], questions };
       return {
         ...state,
-        [action.title]: deck
+        decks: {
+          ...state.decks,
+          [action.title]: {
+            ...state.decks[action.title],
+            questions: [
+              ...state.decks[action.title].questions,
+              {
+                question: action.question,
+                answer: action.answer
+              }
+            ]
+          }
+        }
       };
       break;
     default:
