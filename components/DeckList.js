@@ -1,10 +1,19 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  TextInput
+} from 'react-native';
 import { connect } from 'react-redux';
 
 import styled from 'styled-components';
 
 class DeckList extends React.Component {
+  state = {
+    search: ''
+  };
   renderItem = ({ item }) => {
     return <DeckRow deck={item} navigation={this.props.navigation} />;
   };
@@ -14,13 +23,24 @@ class DeckList extends React.Component {
   }
   render() {
     const { decks } = this.props;
+    const { search } = this.state;
+    let decksArray = Object.keys(decks).map(d => decks[d]);
+    if (search) decksArray = decksArray.filter(d => d.title.includes(search));
     return (
-      <FlatList
-        style={{ flex: 1 }}
-        data={Object.keys(decks).map(d => decks[d])}
-        renderItem={this.renderItem}
-        keyExtractor={item => item.title}
-      />
+      <View style={{ flex: 1 }}>
+        <StyledTextInput
+          placeholder="Search..."
+          value={search}
+          onChangeText={search => this.setState({ search })}
+          selectTextOnFocus={true}
+        />
+        <FlatList
+          style={{ flex: 1 }}
+          data={decksArray}
+          renderItem={this.renderItem}
+          keyExtractor={item => item.title}
+        />
+      </View>
     );
   }
 }
@@ -57,4 +77,10 @@ const StyledDeckTitle = styled.Text`
 `;
 const StyledCardsText = styled.Text`
   color: gray;
+`;
+
+const StyledTextInput = styled.TextInput`
+  min-height: 50px;
+  padding-left: 10px;
+  padding-right: 10px;
 `;
