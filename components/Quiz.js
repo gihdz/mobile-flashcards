@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import {
   Container,
-  Header,
   Button,
   Segment,
   Content,

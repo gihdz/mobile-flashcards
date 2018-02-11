@@ -10,7 +10,7 @@ class DeckList extends React.Component {
   };
   componentDidMount() {
     const { navigation } = this.props;
-    navigation.navigate('Quiz', { entryId: 'React' });
+    navigation.navigate('NewDeck');
   }
   render() {
     const { decks } = this.props;
