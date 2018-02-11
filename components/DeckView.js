@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
@@ -26,6 +26,14 @@ class DeckView extends React.Component {
           </StyledTouchableOpacity>
           <StyledTouchableOpacity
             onPress={() => {
+              if (questions.length === 0) {
+                Alert.alert(
+                  'No cards on deck!',
+                  'Add some cards to current deck for the quiz to start!',
+                  [{ text: 'OK' }]
+                );
+                return;
+              }
               navigation.navigate('Quiz', { entryId: title });
             }}
             style={{

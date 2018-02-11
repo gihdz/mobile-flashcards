@@ -1,3 +1,4 @@
+import { ADD_CARD, ADD_DECK } from '../actions';
 const defaultState = {
   decks: {
     React: {
@@ -28,6 +29,29 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
   switch (action.type) {
+    case ADD_DECK:
+      return {
+        ...state,
+        ['decks']: {
+          ...state.decks,
+          [action.title]: {
+            title: action.title,
+            questions: []
+          }
+        }
+      };
+      break;
+    case ADD_CARD:
+      const questions = [
+        ...state[title].questions,
+        { question: action.question, answer: action.answer }
+      ];
+      const deck = { ...state[title], questions };
+      return {
+        ...state,
+        [action.title]: deck
+      };
+      break;
     default:
       return state;
   }

@@ -1,14 +1,27 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
+
+import { addDeck } from '../actions';
 
 class NewDeck extends React.Component {
   state = {
     titleText: ''
   };
+  onSubmit = () => {
+    const { addDeck, navigation } = this.props;
+    const { titleText } = this.state;
+    if (titleText) {
+      this.setState({ titleText: '' }, () => {
+        addDeck(titleText.trim());
+        navigation.navigate('Decks');
+      });
+    }
+  };
   render() {
     return (
-      <StyledView>
+      <StyledKeyboardAvoidingView behavior="padding">
         <TextContainer>
           <StyledText>What is the title of your new deck?</StyledText>
         </TextContainer>
@@ -16,19 +29,21 @@ class NewDeck extends React.Component {
           <StyledTextInput
             onChangeText={titleText => this.setState({ titleText })}
             placeholder="Deck Title"
+            value={this.state.titleText}
           />
         </InputContainer>
         <ButtonContainer>
-          <StyledTouchableOp onPress={() => console.log(this.state.titleText)}>
+          <StyledTouchableOp onPress={this.onSubmit}>
             <Text style={{ color: 'white', fontSize: 18 }}>Submit</Text>
           </StyledTouchableOp>
         </ButtonContainer>
-      </StyledView>
+      </StyledKeyboardAvoidingView>
     );
   }
 }
 
-export default NewDeck;
+export default connect(null, { addDeck })(NewDeck);
+
 const ButtonStyle = `
   width: 200px;
   height: 60px;
@@ -36,7 +51,7 @@ const ButtonStyle = `
   align-items: center;
   justify-content: center;
 `;
-const StyledView = styled.View`
+const StyledKeyboardAvoidingView = styled.KeyboardAvoidingView`
   align-items: center;
   flex: 1;
 `;
