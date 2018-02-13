@@ -140,11 +140,18 @@ class Quiz extends React.Component {
                 const icon = item.answered ? 'md-checkmark' : 'md-close';
                 const color = item.answered ? 'green' : 'red';
                 return (
-                  <ListItem icon>
-                    <Body>
+                  <ListItem icon style={styles.listItemHeight}>
+                    <Body style={styles.listItemHeight}>
+                      <ListItemHeader>
+                        <Text style={{ fontSize: 8 }}>Question</Text>
+                      </ListItemHeader>
                       <Text>{item.question}</Text>
+                      <ListItemHeader style={{ marginTop: 10 }}>
+                        <Text style={{ fontSize: 8 }}>Answer</Text>
+                      </ListItemHeader>
+                      <Text>{item.answer}</Text>
                     </Body>
-                    <Right>
+                    <Right style={styles.listItemHeight}>
                       <Icon name={icon} style={{ color }} />
                     </Right>
                   </ListItem>
@@ -227,6 +234,17 @@ const ButtonStyle = `
   border-radius: 5px;
   align-items: center;
   justify-content: center;
+`;
+
+const styles = StyleSheet.create({
+  listItemHeight: {
+    height: 200
+  }
+});
+
+const ListItemHeader = styled.View`
+  border-bottom-color: black;
+  border-bottom-width: 2px;
 `;
 
 const ButtonsContainer = styled.View`

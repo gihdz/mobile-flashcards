@@ -36,10 +36,13 @@ const Tabs = TabNavigator(
   },
   {
     navigationOptions: {
-      header: null
+      headerTitle: 'Decks'
     },
+    tabBarPosition: 'bottom',
     tabBarOptions: {
       activeTintColor: Platform.OS === 'ios' ? 'purple' : 'white',
+      // showIcon: true,
+      // showLabel: false,
       style: {
         height: 56,
         shadowColor: 'rgba(0, 0, 0, 0.24)',
@@ -66,12 +69,6 @@ const MainNavigator = StackNavigator({
   },
   DeckView: {
     screen: DeckView
-    // navigationOptions: {
-    //   headerTintColor: white,
-    //   headerStyle: {
-    //     backgroundColor: purple
-    //   }
-    // }
   }
 });
 
@@ -81,7 +78,7 @@ export default class App extends React.Component {
       <Provider store={createStore(reducer)}>
         <View style={styles.container}>
           <View style={{ height: Constants.statusBarHeight }}>
-            <StatusBar translucent barStyle="light-content" />
+            <StatusBar translucent />
           </View>
           <MainNavigator />
         </View>
