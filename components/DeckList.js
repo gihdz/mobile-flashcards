@@ -5,10 +5,10 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
-  AsyncStorage
+  AsyncStorage,
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
-
 import styled from 'styled-components';
 
 import { addDecks } from '../actions/';
@@ -16,7 +16,8 @@ import { fetchDecks } from '../utils/api';
 
 class DeckList extends React.Component {
   state = {
-    search: ''
+    search: '',
+    loading: true
   };
   renderItem = ({ item }) => {
     return <DeckRow deck={item} navigation={this.props.navigation} />;
@@ -26,14 +27,22 @@ class DeckList extends React.Component {
       if (decks) {
         const { addDecks } = this.props;
         addDecks(JSON.parse(decks));
+        this.setState({ loading: false });
       }
     });
   }
   render() {
     const { decks } = this.props;
-    const { search } = this.state;
+    const { search, loading } = this.state;
     let decksArray = Object.keys(decks).map(d => decks[d]);
+    decksArray.reverse();
     if (search) decksArray = decksArray.filter(d => d.title.includes(search));
+    if (loading)
+      return (
+        <ActivityIndicatorView>
+          <ActivityIndicator size="large" />
+        </ActivityIndicatorView>
+      );
     return (
       <View style={{ flex: 1 }}>
         <StyledTextInput
@@ -91,4 +100,9 @@ const StyledTextInput = styled.TextInput`
   min-height: 50px;
   padding-left: 10px;
   padding-right: 10px;
+`;
+const ActivityIndicatorView = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
 `;
