@@ -31,7 +31,7 @@ class DeckList extends React.Component {
         this.setState({ loading: false });
       }
     });
-    clearLocalNotification().then(setLocalNotification);
+    setLocalNotification();
   }
   render() {
     const { decks } = this.props;
