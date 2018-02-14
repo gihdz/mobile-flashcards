@@ -1,23 +1,30 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { addDeck } from '../actions';
-import { submitDeck } from '../utils/api'
-
+import { submitDeck } from '../utils/api';
 
 class NewDeck extends React.Component {
   state = {
     titleText: ''
   };
   onSubmit = () => {
-    const { addDeck, navigation } = this.props;
+    const { addDeck, navigation, decks } = this.props;
     const { titleText } = this.state;
     if (titleText) {
+      if (decks[titleText]) {
+        Alert.alert(
+          'Info',
+          "There's already a deck with the supplied title! Please specify a distinct title.",
+          [{ text: 'OK' }]
+        );
+        return;
+      }
       this.setState({ titleText: '' }, () => {
         const trimmedTitle = titleText.trim();
-        submitDeck(trimmedTitle)
+        submitDeck(trimmedTitle);
         addDeck(trimmedTitle);
         navigation.navigate('Decks');
       });
@@ -45,8 +52,12 @@ class NewDeck extends React.Component {
     );
   }
 }
-
-export default connect(null, { addDeck })(NewDeck);
+const mapStateToProps = ({ decks }) => {
+  return {
+    decks
+  };
+};
+export default connect(mapStateToProps, { addDeck })(NewDeck);
 
 const ButtonStyle = `
   width: 200px;
