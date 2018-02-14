@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { addCard } from '../actions';
-
+import { submitCard } from '../utils/api';
 class NewCard extends React.Component {
   static navigationOptions = () => {
     return {
@@ -19,6 +19,7 @@ class NewCard extends React.Component {
     const { addCard, navigation, title } = this.props;
     const { question, answer } = this.state;
     if (question && answer) {
+      submitCard(title, question.trim(), answer.trim());
       addCard(title, question.trim(), answer.trim());
       navigation.goBack();
     }
