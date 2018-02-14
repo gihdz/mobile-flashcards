@@ -13,6 +13,7 @@ import styled from 'styled-components';
 
 import { addDecks } from '../actions/';
 import { fetchDecks } from '../utils/api';
+import { clearLocalNotification, setLocalNotification } from '../utils/helpers';
 
 class DeckList extends React.Component {
   state = {
@@ -30,6 +31,7 @@ class DeckList extends React.Component {
         this.setState({ loading: false });
       }
     });
+    clearLocalNotification().then(setLocalNotification);
   }
   render() {
     const { decks } = this.props;
