@@ -4,11 +4,15 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  TextInput
+  TextInput,
+  AsyncStorage
 } from 'react-native';
 import { connect } from 'react-redux';
 
 import styled from 'styled-components';
+
+import { addDecks } from '../actions/';
+import { fetchDecks } from '../utils/api';
 
 class DeckList extends React.Component {
   state = {
@@ -18,8 +22,12 @@ class DeckList extends React.Component {
     return <DeckRow deck={item} navigation={this.props.navigation} />;
   };
   componentDidMount() {
-    // const { navigation } = this.props;
-    // navigation.navigate('NewDeck');
+    fetchDecks().then(decks => {
+      if (decks) {
+        const { addDecks } = this.props;
+        addDecks(JSON.parse(decks));
+      }
+    });
   }
   render() {
     const { decks } = this.props;
@@ -63,7 +71,7 @@ const mapStateToProps = state => {
     decks
   };
 };
-export default connect(mapStateToProps)(DeckList);
+export default connect(mapStateToProps, { addDecks })(DeckList);
 
 const StyledDeckRow = styled.View`
   border: 1px solid;

@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { addDeck } from '../actions';
+import { submitDeck } from '../utils/api'
+
 
 class NewDeck extends React.Component {
   state = {
@@ -14,7 +16,9 @@ class NewDeck extends React.Component {
     const { titleText } = this.state;
     if (titleText) {
       this.setState({ titleText: '' }, () => {
-        addDeck(titleText.trim());
+        const trimmedTitle = titleText.trim();
+        submitDeck(trimmedTitle)
+        addDeck(trimmedTitle);
         navigation.navigate('Decks');
       });
     }
