@@ -72,12 +72,17 @@ class DeckList extends React.Component {
           onChangeText={search => this.setState({ search })}
           selectTextOnFocus={true}
         />
-        <FlatList
-          style={{ flex: 1 }}
-          data={decksArray}
-          renderItem={this.renderItem}
-          keyExtractor={item => item.title}
-        />
+        <StyledKeyboardAvoidingView
+          behavior="position"
+          contentContainerStyle={{ flex: 1 }}
+        >
+          <FlatList
+            style={{ flex: 1 }}
+            data={decksArray}
+            renderItem={this.renderItem}
+            keyExtractor={item => item.title}
+          />
+        </StyledKeyboardAvoidingView>
       </View>
     );
   }
@@ -133,4 +138,8 @@ const ActivityIndicatorView = styled.View`
 const TODeckContainer = styled.TouchableOpacity`
   margin-top: 10px;
   padding: 10px;
+`;
+
+const StyledKeyboardAvoidingView = styled.KeyboardAvoidingView`
+  flex: 1;
 `;
