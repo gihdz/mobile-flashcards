@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { SwipeRow } from 'native-base';
 
 import { addDecks } from '../actions/';
 import { fetchDecks } from '../utils/api';
@@ -40,6 +41,13 @@ class DeckList extends React.Component {
   render() {
     const { decks, navigation } = this.props;
     const { search, loading } = this.state;
+    if (loading)
+      return (
+        <ActivityIndicatorView>
+          <ActivityIndicator size="large" />
+        </ActivityIndicatorView>
+      );
+
     let decksArray = Object.keys(decks).map(d => decks[d]);
     if (decksArray.length === 0)
       return (
@@ -55,12 +63,7 @@ class DeckList extends React.Component {
       );
     decksArray.reverse();
     if (search) decksArray = decksArray.filter(d => d.title.includes(search));
-    if (loading)
-      return (
-        <ActivityIndicatorView>
-          <ActivityIndicator size="large" />
-        </ActivityIndicatorView>
-      );
+
     return (
       <View style={{ flex: 1 }}>
         <StyledTextInput
@@ -82,14 +85,14 @@ class DeckList extends React.Component {
 const DeckRow = ({ deck, navigation }) => {
   const { title, questions } = deck;
   return (
-    <TouchableOpacity
+    <TODeckContainer
       onPress={() => navigation.navigate('DeckView', { entryId: title })}
     >
       <StyledDeckRow>
         <StyledDeckTitle>{title}</StyledDeckTitle>
         <StyledCardsText>{questions.length} cards</StyledCardsText>
       </StyledDeckRow>
-    </TouchableOpacity>
+    </TODeckContainer>
   );
 };
 const mapStateToProps = state => {
@@ -105,6 +108,7 @@ const StyledDeckRow = styled.View`
   height: 200;
   align-items: center;
   justify-content: center;
+  border-radius: 10px;
 `;
 const StyledDeckTitle = styled.Text`
   font-size: 24px;
@@ -118,9 +122,15 @@ const StyledTextInput = styled.TextInput`
   min-height: 50px;
   padding-left: 10px;
   padding-right: 10px;
+  border-bottom-width: 1px;
 `;
 const ActivityIndicatorView = styled.View`
   flex: 1;
   align-items: center;
   justify-content: center;
+`;
+
+const TODeckContainer = styled.TouchableOpacity`
+  margin-top: 10px;
+  padding: 10px;
 `;

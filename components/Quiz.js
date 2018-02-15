@@ -5,15 +5,16 @@ import styled from 'styled-components';
 import {
   Container,
   Button,
-  Segment,
-  Content,
   Text,
   List,
   ListItem,
   Right,
   Icon,
   Left,
-  Body
+  Body,
+  Tabs,
+  Tab,
+  TabHeading
 } from 'native-base';
 
 import { TransparentButton, RedButton, GreenButton } from './StyledComponents';
@@ -28,7 +29,6 @@ class Quiz extends React.Component {
     step: 0,
     showAnswer: false,
     correctAnswers: 0,
-    selectedIndex: 0,
     summaryAnswers: []
   };
   async componentWillMount() {
@@ -102,17 +102,14 @@ class Quiz extends React.Component {
       summaryAnswers: []
     });
   };
-  selectIndex = selectedIndex => {
-    this.setState({ selectedIndex });
-  };
-  _renderSummaryContent = () => {
+  _renderSummaryContent = selectedTab => {
     const { navigation } = this.props;
     const { summaryAnswers } = this.state;
     const { questions } = this.props.deck;
 
-    const { selectedIndex, correctAnswers } = this.state;
-    switch (selectedIndex) {
-      case 0:
+    const { correctAnswers } = this.state;
+    switch (selectedTab) {
+      case 'summary':
         return (
           <View>
             <View>
@@ -133,7 +130,7 @@ class Quiz extends React.Component {
             </ButtonsContainer>
           </View>
         );
-      case 1:
+      case 'cards':
         return (
           <View>
             <List
@@ -143,6 +140,9 @@ class Quiz extends React.Component {
                 const color = item.answered ? 'green' : 'red';
                 return (
                   <ListItem icon style={styles.listItemHeight}>
+                    <Left style={styles.listItemHeight}>
+                      <Icon name={icon} style={{ color }} />
+                    </Left>
                     <Body style={styles.listItemHeight}>
                       <ListItemHeader>
                         <Text style={{ fontSize: 8 }}>Question</Text>
@@ -153,39 +153,43 @@ class Quiz extends React.Component {
                       </ListItemHeader>
                       <Text>{item.answer}</Text>
                     </Body>
-                    <Right style={styles.listItemHeight}>
-                      <Icon name={icon} style={{ color }} />
-                    </Right>
                   </ListItem>
                 );
               }}
             />
           </View>
         );
+      default:
+        return (
+          <View>
+            <Text>No content for this tab</Text>
+          </View>
+        );
     }
   };
   _renderSummary() {
-    const { selectedIndex } = this.state;
-
     return (
       <SummaryView>
-        <Segment>
-          <Button
-            first
-            active={selectedIndex === 0}
-            onPress={() => this.selectIndex(0)}
+        <Tabs>
+          <Tab
+            heading={
+              <TabHeading>
+                <Text>Summary</Text>
+              </TabHeading>
+            }
           >
-            <Text>Info</Text>
-          </Button>
-          <Button
-            last
-            active={selectedIndex === 1}
-            onPress={() => this.selectIndex(1)}
+            {this._renderSummaryContent('summary')}
+          </Tab>
+          <Tab
+            heading={
+              <TabHeading>
+                <Text>Cards</Text>
+              </TabHeading>
+            }
           >
-            <Text>Questions</Text>
-          </Button>
-        </Segment>
-        <Content padder>{this._renderSummaryContent()}</Content>
+            {this._renderSummaryContent('cards')}
+          </Tab>
+        </Tabs>
       </SummaryView>
     );
   }
@@ -196,7 +200,7 @@ class Quiz extends React.Component {
 
     const view = this._renderContent();
     return (
-      <View>
+      <QuizContent>
         <View>
           <StyledStepText>{`${step + 1}/${questions.length}`}</StyledStepText>
         </View>
@@ -212,7 +216,7 @@ class Quiz extends React.Component {
             <StyledText>Incorrect</StyledText>
           </RedButton>
         </ButtonsContainer>
-      </View>
+      </QuizContent>
     );
   }
 }
@@ -269,5 +273,9 @@ const AnswerQuestionText = styled.Text`
   font-weight: 700;
 `;
 const SummaryView = styled.View`
+  flex: 1;
+  background-color: white;
+`;
+const QuizContent = styled.View`
   flex: 1;
 `;
