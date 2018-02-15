@@ -40,15 +40,15 @@ export const submitCard = (title, question, answer) => {
   );
 };
 
-export const removeEntry = key => {
+export const removeDeck = title => {
   return AsyncStorage.getItem(MOBILE_FLASHCARDS_DECKS_STORAGE_KEY).then(
-    results => {
-      const data = JSON.parse(results);
-      data[key] = undefined;
-      delete data[key];
+    decks => {
+      const jsonDecks = JSON.parse(decks);
+      jsonDecks[title] = undefined;
+      delete jsonDecks[title];
       AsyncStorage.setItem(
         MOBILE_FLASHCARDS_DECKS_STORAGE_KEY,
-        JSON.stringify(data)
+        JSON.stringify(jsonDecks)
       );
     }
   );

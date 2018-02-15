@@ -1,4 +1,4 @@
-import { ADD_CARD, ADD_DECK, ADD_DECKS } from '../actions';
+import { ADD_CARD, ADD_DECK, ADD_DECKS, REMOVE_DECK } from '../actions';
 const defaultState = {
   decks: {}
   // decks: {
@@ -65,6 +65,18 @@ export default (state = defaultState, action) => {
         ...state,
         decks: action.decks
       };
+    case REMOVE_DECK:
+      const decks = {
+        ...state.decks
+      };
+      delete decks[action.title];
+      return {
+        ...state,
+        decks: {
+          ...decks
+        }
+      };
+
     default:
       return state;
   }

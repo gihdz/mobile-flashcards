@@ -3,7 +3,9 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { TransparentButton, BlackButton } from './StyledComponents';
+import { TransparentButton, BlackButton, RedButton } from './StyledComponents';
+import { removeDeck } from '../utils/api';
+import { deleteDeck } from '../actions';
 class DeckView extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const { entryId } = navigation.state.params;
@@ -13,7 +15,8 @@ class DeckView extends React.Component {
     };
   };
   render() {
-    const { deck, navigation } = this.props;
+    const { deck, navigation, deleteDeck } = this.props;
+    if (!deck) return false;
     const { title, questions } = deck;
     return (
       <StyledDeckView>
@@ -47,6 +50,27 @@ class DeckView extends React.Component {
           >
             <Text style={{ color: '#fff' }}>Start Quiz</Text>
           </BlackButton>
+          <RedButton
+            style={{
+              marginTop: 15
+            }}
+            onPress={() => {
+              Alert.alert('Delete Deck', 'Sure you want to delete this deck?', [
+                { text: 'CANCEL' },
+                {
+                  text: 'DELETE',
+                  onPress: () => {
+                    removeDeck(title).then(() => {
+                      navigation.goBack();
+                      deleteDeck(title);
+                    });
+                  }
+                }
+              ]);
+            }}
+          >
+            <Text style={{ color: '#fff' }}>Delete Deck</Text>
+          </RedButton>
         </ButtonsContainer>
       </StyledDeckView>
     );
@@ -61,7 +85,7 @@ const mapStateToProps = (state, { navigation }) => {
     deck
   };
 };
-export default connect(mapStateToProps)(DeckView);
+export default connect(mapStateToProps, { deleteDeck })(DeckView);
 const StyledDeckTitle = styled.Text`
   font-size: 50px;
   font-weight: 600;
@@ -80,7 +104,7 @@ const Body = styled.View`
   height: 250px;
 `;
 const ButtonsContainer = styled.View`
+  flex: 1;
   align-items: center;
   justify-content: center;
-  height: 200px;
 `;
