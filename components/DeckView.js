@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
+import { TransparentButton, BlackButton } from './StyledComponents';
 class DeckView extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const { entryId } = navigation.state.params;
@@ -21,14 +22,14 @@ class DeckView extends React.Component {
           <StyledCardsText>{questions.length} cards</StyledCardsText>
         </Body>
         <ButtonsContainer>
-          <StyledTouchableOpacity
+          <TransparentButton
             onPress={() => {
               navigation.navigate('NewCard', { title });
             }}
           >
             <Text>Add Card</Text>
-          </StyledTouchableOpacity>
-          <StyledTouchableOpacity
+          </TransparentButton>
+          <BlackButton
             onPress={() => {
               if (questions.length === 0) {
                 Alert.alert(
@@ -41,12 +42,11 @@ class DeckView extends React.Component {
               navigation.navigate('Quiz', { entryId: title });
             }}
             style={{
-              marginTop: 15,
-              backgroundColor: '#000'
+              marginTop: 15
             }}
           >
             <Text style={{ color: '#fff' }}>Start Quiz</Text>
-          </StyledTouchableOpacity>
+          </BlackButton>
         </ButtonsContainer>
       </StyledDeckView>
     );
@@ -83,9 +83,4 @@ const ButtonsContainer = styled.View`
   align-items: center;
   justify-content: center;
   height: 200px;
-`;
-const StyledTouchableOpacity = styled.TouchableOpacity`
-  border: 2px solid;
-  border-radius: 5;
-  padding: 20px 60px;
 `;

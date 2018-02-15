@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { addCard } from '../actions';
 import { submitCard } from '../utils/api';
+import { BlackButton } from './StyledComponents';
 class NewCard extends React.Component {
   static navigationOptions = () => {
     return {
@@ -47,9 +48,9 @@ class NewCard extends React.Component {
           />
         </InputContainer>
         <ButtonContainer>
-          <StyledTouchableOp onPress={this.onSubmit}>
+          <BlackButton onPress={this.onSubmit}>
             <Text style={{ color: 'white', fontSize: 18 }}>Submit</Text>
-          </StyledTouchableOp>
+          </BlackButton>
         </ButtonContainer>
       </StyledKeyboardAvoidingView>
     );
@@ -65,13 +66,6 @@ const mapStateToProps = (state, { navigation }) => {
 
 export default connect(mapStateToProps, { addCard })(NewCard);
 
-const ButtonStyle = `
-  width: 200px;
-  height: 60px;
-  border-radius: 5px;
-  align-items: center;
-  justify-content: center;
-`;
 const StyledKeyboardAvoidingView = styled.KeyboardAvoidingView`
   align-items: center;
   flex: 1;
@@ -98,7 +92,4 @@ const StyledTextInput = styled.TextInput`
 const ButtonContainer = styled.View`
   margin-top: 35px;
   flex: 2;
-`;
-const StyledTouchableOp = styled.TouchableOpacity`
-  ${ButtonStyle} background-color: black;
 `;

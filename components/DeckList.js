@@ -15,6 +15,8 @@ import { addDecks } from '../actions/';
 import { fetchDecks } from '../utils/api';
 import { clearLocalNotification, setLocalNotification } from '../utils/helpers';
 
+import { TransparentButton, CenterView } from './StyledComponents';
+
 class DeckList extends React.Component {
   state = {
     search: '',
@@ -29,14 +31,28 @@ class DeckList extends React.Component {
         const { addDecks } = this.props;
         addDecks(JSON.parse(decks));
         this.setState({ loading: false });
+        return;
       }
+      this.setState({ loading: false });
     });
     setLocalNotification();
   }
   render() {
-    const { decks } = this.props;
+    const { decks, navigation } = this.props;
     const { search, loading } = this.state;
     let decksArray = Object.keys(decks).map(d => decks[d]);
+    if (decksArray.length === 0)
+      return (
+        <CenterView>
+          <TransparentButton
+            onPress={() => {
+              navigation.navigate('NewDeck');
+            }}
+          >
+            <Text>Add new deck</Text>
+          </TransparentButton>
+        </CenterView>
+      );
     decksArray.reverse();
     if (search) decksArray = decksArray.filter(d => d.title.includes(search));
     if (loading)

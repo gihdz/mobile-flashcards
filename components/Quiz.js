@@ -16,6 +16,8 @@ import {
   Body
 } from 'native-base';
 
+import { TransparentButton, RedButton, GreenButton } from './StyledComponents';
+
 class Quiz extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -119,15 +121,15 @@ class Quiz extends React.Component {
               } questions!`}</MainText>
             </View>
             <ButtonsContainer style={{ marginTop: 25 }}>
-              <SummaryButton onPress={this.resetQuiz}>
+              <TransparentButton onPress={this.resetQuiz}>
                 <Text>Start Over</Text>
-              </SummaryButton>
-              <SummaryButton
+              </TransparentButton>
+              <TransparentButton
                 style={{ marginTop: 10 }}
                 onPress={() => navigation.goBack()}
               >
                 <Text>Back to Deck</Text>
-              </SummaryButton>
+              </TransparentButton>
             </ButtonsContainer>
           </View>
         );
@@ -200,18 +202,15 @@ class Quiz extends React.Component {
         </View>
         {view}
         <ButtonsContainer>
-          <StyledTouchableOpacity
-            style={{ backgroundColor: 'green' }}
-            onPress={() => this.onBtnPress('correct')}
-          >
+          <GreenButton onPress={() => this.onBtnPress('correct')}>
             <StyledText>Correct</StyledText>
-          </StyledTouchableOpacity>
-          <StyledTouchableOpacity
-            style={{ backgroundColor: 'red', marginTop: 10 }}
+          </GreenButton>
+          <RedButton
+            style={{ marginTop: 10 }}
             onPress={() => this.onBtnPress('incorrect')}
           >
             <StyledText>Incorrect</StyledText>
-          </StyledTouchableOpacity>
+          </RedButton>
         </ButtonsContainer>
       </View>
     );
@@ -228,14 +227,6 @@ const mapStateToProps = (state, { navigation }) => {
 };
 export default connect(mapStateToProps)(Quiz);
 
-const ButtonStyle = `
-  width: 200px;
-  height: 60px;
-  border-radius: 5px;
-  align-items: center;
-  justify-content: center;
-`;
-
 const styles = StyleSheet.create({
   listItemHeight: {
     height: 200
@@ -251,12 +242,6 @@ const ButtonsContainer = styled.View`
   align-items: center;
 `;
 
-const StyledTouchableOpacity = styled.TouchableOpacity`
-  ${ButtonStyle};
-`;
-const SummaryButton = styled.TouchableOpacity`
-  ${ButtonStyle} border: 2px solid;
-`;
 const StyledText = styled.Text`
   color: #fff;
   font-size: 18px;

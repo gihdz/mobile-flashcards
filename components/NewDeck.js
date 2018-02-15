@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import { addDeck } from '../actions';
 import { submitDeck } from '../utils/api';
+import { BlackButton } from './StyledComponents';
 
 class NewDeck extends React.Component {
   state = {
@@ -44,9 +45,9 @@ class NewDeck extends React.Component {
           />
         </InputContainer>
         <ButtonContainer>
-          <StyledTouchableOp onPress={this.onSubmit}>
+          <BlackButton onPress={this.onSubmit}>
             <Text style={{ color: 'white', fontSize: 18 }}>Submit</Text>
-          </StyledTouchableOp>
+          </BlackButton>
         </ButtonContainer>
       </StyledKeyboardAvoidingView>
     );
@@ -59,13 +60,6 @@ const mapStateToProps = ({ decks }) => {
 };
 export default connect(mapStateToProps, { addDeck })(NewDeck);
 
-const ButtonStyle = `
-  width: 200px;
-  height: 60px;
-  border-radius: 5px;
-  align-items: center;
-  justify-content: center;
-`;
 const StyledKeyboardAvoidingView = styled.KeyboardAvoidingView`
   align-items: center;
   flex: 1;
@@ -91,7 +85,4 @@ const StyledTextInput = styled.TextInput`
 `;
 const ButtonContainer = styled.View`
   flex: 2;
-`;
-const StyledTouchableOp = styled.TouchableOpacity`
-  ${ButtonStyle} background-color: black;
 `;
