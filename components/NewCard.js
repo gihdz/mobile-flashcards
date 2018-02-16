@@ -82,12 +82,13 @@ const InputContainer = styled.View`
   flex: 1;
 `;
 const StyledTextInput = styled.TextInput`
-  min-width: 300;
+  width: 300px;
+
   min-height: 50px;
-  border: 2px solid;
   padding-left: 10px;
   padding-right: 10px;
   border-radius: 5px;
+  padding-bottom: 10px;
 `;
 const ButtonContainer = styled.View`
   margin-top: 35px;

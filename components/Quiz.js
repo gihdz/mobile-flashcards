@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+  ScrollView
+} from 'react-native';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import {
@@ -51,15 +57,18 @@ class Quiz extends React.Component {
     const buttonText = showAnswer ? 'Question' : 'Answer';
     return (
       <MainContent>
-        <MainText>{mainText}</MainText>
-        <TouchableOpacity
-          style={{ marginTop: 10 }}
+        <View style={{ borderWidth: 2, flexDirection: 'row', flex: 1 }}>
+          <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+            <MainText>{mainText}</MainText>
+          </ScrollView>
+        </View>
+        <TOAnswerQuestion
           onPress={() => {
             this.setState({ showAnswer: !showAnswer });
           }}
         >
           <AnswerQuestionText>{buttonText}</AnswerQuestionText>
-        </TouchableOpacity>
+        </TOAnswerQuestion>
       </MainContent>
     );
   }
@@ -111,7 +120,7 @@ class Quiz extends React.Component {
     switch (selectedTab) {
       case 'summary':
         return (
-          <View>
+          <SummaryContent>
             <View>
               <MainText>{`You got ${correctAnswers} correct answers out of ${
                 questions.length
@@ -128,7 +137,7 @@ class Quiz extends React.Component {
                 <Text>Back to Deck</Text>
               </TransparentButton>
             </ButtonsContainer>
-          </View>
+          </SummaryContent>
         );
       case 'cards':
         return (
@@ -168,13 +177,17 @@ class Quiz extends React.Component {
     }
   };
   _renderSummary() {
+    const tabUnderlineStyle =
+      Platform.OS === 'android' ? styles.tabBarUnderlineStyle : {};
+    const tabHeadingStyles = Platform.OS === 'android' ? styles.tabHeading : {};
+    const tabTextStyle = Platform.OS === 'android' ? styles.tabBarText : {};
     return (
       <SummaryView>
-        <Tabs>
+        <Tabs tabBarUnderlineStyle={tabUnderlineStyle}>
           <Tab
             heading={
-              <TabHeading>
-                <Text>Summary</Text>
+              <TabHeading style={tabHeadingStyles}>
+                <Text style={tabTextStyle}>Summary</Text>
               </TabHeading>
             }
           >
@@ -182,8 +195,8 @@ class Quiz extends React.Component {
           </Tab>
           <Tab
             heading={
-              <TabHeading>
-                <Text>Cards</Text>
+              <TabHeading style={tabHeadingStyles}>
+                <Text style={tabTextStyle}>Cards</Text>
               </TabHeading>
             }
           >
@@ -234,6 +247,18 @@ export default connect(mapStateToProps)(Quiz);
 const styles = StyleSheet.create({
   listItemHeight: {
     height: 200
+  },
+  tabBarUnderlineStyle: {
+    backgroundColor: 'blue'
+  },
+  tabHeading: {
+    backgroundColor: 'white'
+  },
+  tabBarText: {
+    color: 'black'
+  },
+  scrollViewContainer: {
+    // borderWidth: 3
   }
 });
 
@@ -244,6 +269,7 @@ const ListItemHeader = styled.View`
 
 const ButtonsContainer = styled.View`
   align-items: center;
+  flex: 1;
 `;
 
 const StyledText = styled.Text`
@@ -256,9 +282,8 @@ const StyledStepText = styled.Text`
   margin-top: 15px;
 `;
 const MainContent = styled.View`
+  flex: 1;
   align-items: center;
-  justify-content: center;
-  height: 300px;
   padding-right: 20px;
   padding-left: 20px;
 `;
@@ -272,9 +297,19 @@ const AnswerQuestionText = styled.Text`
   color: red;
   font-weight: 700;
 `;
+const TOAnswerQuestion = styled.TouchableOpacity`
+  padding-bottom: 30px;
+`;
 const SummaryView = styled.View`
   flex: 1;
   background-color: white;
+`;
+const SummaryContent = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding-right: 20px;
+  padding-left: 20px;
 `;
 const QuizContent = styled.View`
   flex: 1;

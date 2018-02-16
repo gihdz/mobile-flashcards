@@ -31,6 +31,14 @@ class NewDeck extends React.Component {
       });
     }
   };
+  componentDidMount() {
+    this._sub = this.props.navigation.addListener('didFocus', () => {
+      this.setState({ titleText: '' });
+    });
+  }
+  componentWillUnmount() {
+    this._sub.remove();
+  }
   render() {
     return (
       <StyledKeyboardAvoidingView behavior="padding">
