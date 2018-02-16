@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { TransparentButton, BlackButton, RedButton } from './StyledComponents';
 import { removeDeck } from '../utils/api';
 import { deleteDeck } from '../actions';
+import { Orientation } from '../utils/constants';
+import { isPortrait, isLandscape } from '../utils/helpers';
 class DeckView extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const { entryId } = navigation.state.params;
@@ -14,12 +16,38 @@ class DeckView extends React.Component {
       title: entryId
     };
   };
+  constructor(props) {
+    super(props);
+    const { PORTRAIT, LANDSCAPE } = Orientation;
+    this.state = {
+      orientation: isPortrait() ? PORTRAIT : LANDSCAPE
+    };
+    Dimensions.addEventListener('change', this.orientationHandler);
+  }
+  orientationHandler = () => {
+    const { PORTRAIT, LANDSCAPE } = Orientation;
+
+    this.setState({
+      orientation: isPortrait() ? PORTRAIT : LANDSCAPE
+    });
+  };
+  componentWillUnmount() {
+    Dimensions.removeEventListener('change', this.orientationHandler);
+  }
+  _getLayout() {
+    const { orientation } = this.state;
+    const { PORTRAIT } = Orientation;
+    return {
+      DeckView: orientation === PORTRAIT ? DeckViewColumn : DeckViewRow
+    };
+  }
   render() {
     const { deck, navigation, deleteDeck } = this.props;
     if (!deck) return false;
     const { title, questions } = deck;
+    const { DeckView } = this._getLayout();
     return (
-      <StyledDeckView>
+      <DeckView>
         <Body>
           <StyledDeckTitle>{title}</StyledDeckTitle>
           <StyledCardsText>{questions.length} cards</StyledCardsText>
@@ -72,7 +100,7 @@ class DeckView extends React.Component {
             <Text style={{ color: '#fff' }}>Delete Deck</Text>
           </RedButton>
         </ButtonsContainer>
-      </StyledDeckView>
+      </DeckView>
     );
   }
 }
@@ -86,6 +114,7 @@ const mapStateToProps = (state, { navigation }) => {
   };
 };
 export default connect(mapStateToProps, { deleteDeck })(DeckView);
+
 const StyledDeckTitle = styled.Text`
   font-size: 50px;
   font-weight: 600;
@@ -95,10 +124,15 @@ margin-top: 10px
   font-size: 28px;
   color: gray;
 `;
-const StyledDeckView = styled.ScrollView`
+const DeckViewColumn = styled.View`
   flex: 1;
 `;
+const DeckViewRow = styled.View`
+  flex: 1;
+  flex-direction: row;
+`;
 const Body = styled.View`
+  flex: 1;
   align-items: center;
   justify-content: center;
   height: 250px;

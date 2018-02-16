@@ -7,6 +7,7 @@ import {
   ScrollView,
   Dimensions
 } from 'react-native';
+
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import {
@@ -26,7 +27,7 @@ import {
 
 import { TransparentButton, RedButton, GreenButton } from './StyledComponents';
 import { Orientation } from '../utils/constants';
-
+import { isPortrait, isLandscape } from '../utils/helpers';
 class Quiz extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -43,10 +44,20 @@ class Quiz extends React.Component {
       showAnswer: false,
       correctAnswers: 0,
       summaryAnswers: [],
-      orientation: height > width ? PORTRAIT : LANDSCAPE
+      orientation: isPortrait() ? PORTRAIT : LANDSCAPE
     };
+    Dimensions.addEventListener('change', this.orientationHandler);
   }
 
+  orientationHandler = () => {
+    const { PORTRAIT, LANDSCAPE } = Orientation;
+    this.setState({
+      orientation: isPortrait() ? PORTRAIT : LANDSCAPE
+    });
+  };
+  componentWillUnmount() {
+    Dimensions.removeEventListener('change', this.orientationHandler);
+  }
   async componentWillMount() {
     await Expo.Font.loadAsync({
       Roboto: require('native-base/Fonts/Roboto.ttf'),
@@ -67,7 +78,7 @@ class Quiz extends React.Component {
     const buttonText = showAnswer ? 'Question' : 'Answer';
     return (
       <MainContent>
-        <View style={{ borderWidth: 2, flexDirection: 'row', flex: 1 }}>
+        <View style={{ flexDirection: 'row', flex: 1 }}>
           <ScrollView contentContainerStyle={styles.scrollViewContainer}>
             <MainText>{mainText}</MainText>
           </ScrollView>
@@ -192,7 +203,7 @@ class Quiz extends React.Component {
     const tabHeadingStyles = Platform.OS === 'android' ? styles.tabHeading : {};
     const tabTextStyle = Platform.OS === 'android' ? styles.tabBarText : {};
     return (
-      <SummaryView onLayout={this.onLayout.bind(this)}>
+      <SummaryView>
         <Tabs tabBarUnderlineStyle={tabUnderlineStyle}>
           <Tab
             heading={
@@ -216,12 +227,7 @@ class Quiz extends React.Component {
       </SummaryView>
     );
   }
-  onLayout(e) {
-    const { width, height } = Dimensions.get('window');
-    const { PORTRAIT, LANDSCAPE } = Orientation;
-    const orientation = height > width ? PORTRAIT : LANDSCAPE;
-    this.setState({ orientation });
-  }
+
   render() {
     const { questions } = this.props.deck;
     const { step, orientation } = this.state;
@@ -230,14 +236,18 @@ class Quiz extends React.Component {
     const { PORTRAIT } = Orientation;
     const Layout =
       orientation === PORTRAIT ? QuizContentPortrait : QuizContentLandscape;
+    const buttonsContainerJustifyContent =
+      orientation !== PORTRAIT ? 'center' : 'flex-start';
     const view = this._renderContent();
     return (
-      <Layout onLayout={this.onLayout.bind(this)}>
+      <Layout>
         <View>
           <StyledStepText>{`${step + 1}/${questions.length}`}</StyledStepText>
         </View>
         {view}
-        <ButtonsContainer>
+        <ButtonsContainer
+          style={{ justifyContent: buttonsContainerJustifyContent }}
+        >
           <GreenButton onPress={() => this.onBtnPress('correct')}>
             <StyledText>Correct</StyledText>
           </GreenButton>
@@ -275,9 +285,6 @@ const styles = StyleSheet.create({
   },
   tabBarText: {
     color: 'black'
-  },
-  scrollViewContainer: {
-    // borderWidth: 3
   }
 });
 
@@ -332,8 +339,12 @@ const SummaryContent = styled.View`
 `;
 const QuizContentPortrait = styled.View`
   flex: 1;
+  background-color: white;
 `;
 const QuizContentLandscape = styled.View`
+  background-color: white;
+
+  margin-top: 10px;
   flex: 1;
   flex-direction: row;
 `;
