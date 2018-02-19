@@ -6,9 +6,12 @@
     "description": "Study smart!",
     "slug": "mobile-flashcards",
     "version": "1.0",
-    "icon": "https://tylermcginnis.com/udacifitness-512.png",
+    "icon": "https://image.ibb.co/gGGsmS/web_hi_res_512.png",
     "notification": {
-      "icon": "https://tylermcginnis.com/udacifitness-45.png"
+      "icon": "https://image.ibb.co/cG9ZGS/ic_stat_mf_48.png"
+    },
+    "splash": {
+      "image": "https://image.ibb.co/gGGsmS/web_hi_res_512.png"
     },
     "ios": {
       "bundleIdentifier": "org.mobileflashcards.exp"
