@@ -100,12 +100,8 @@ const DeckRow = ({ deck, navigation }) => {
     </TODeckContainer>
   );
 };
-const mapStateToProps = state => {
-  const { decks } = state;
-  return {
-    decks
-  };
-};
+const mapStateToProps = ({ decks }) => ({ decks });
+
 export default connect(mapStateToProps, { addDecks })(DeckList);
 
 const StyledDeckRow = styled.View`
