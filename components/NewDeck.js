@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  Keyboard
+} from 'react-native';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
@@ -27,7 +34,8 @@ class NewDeck extends React.Component {
         const trimmedTitle = titleText.trim();
         submitDeck(trimmedTitle);
         addDeck(trimmedTitle);
-        navigation.navigate('Decks');
+        Keyboard.dismiss();
+        navigation.navigate('DeckView', { entryId: trimmedTitle });
       });
     }
   };
