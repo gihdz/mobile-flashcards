@@ -9,3 +9,8 @@ This course project, named Mobile Flashcards, will allow users to study collecti
 It is recommended to use yarn to run this project.
 
 Clone the repository and just `yarn install yarn start`.
+
+# External libraries used
+
+* [Styled Components](https://www.styled-components.com/).
+* [React Native Flip Card](https://github.com/moschan/react-native-flip-card).
