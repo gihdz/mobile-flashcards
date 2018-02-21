@@ -24,6 +24,7 @@ import {
   Tab,
   TabHeading
 } from 'native-base';
+import FlipCard from 'react-native-flip-card';
 
 import { TransparentButton, RedButton, GreenButton } from './StyledComponents';
 import { Orientation } from '../utils/constants';
@@ -74,22 +75,49 @@ class Quiz extends React.Component {
         <Text>No cards on deck!</Text>
       </View>
     );
-    const mainText = showAnswer ? question.answer : question.question;
     const buttonText = showAnswer ? 'Question' : 'Answer';
     return (
       <MainContent>
         <View style={{ flexDirection: 'row', flex: 1 }}>
-          <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-            <MainText>{mainText}</MainText>
-          </ScrollView>
+          <FlipCard
+            perspective={5000}
+            friction={10}
+            flipHorizontal={true}
+            flipVertical={false}
+            clickable={false}
+            flip={showAnswer}
+            style={{ borderWidth: 0 }}
+          >
+            <QuestionAnswerContent>
+              <QuestionAnswerScrollViewContainer>
+                <QuestionAnswerScrollView>
+                  <MainText>{question.question}</MainText>
+                </QuestionAnswerScrollView>
+              </QuestionAnswerScrollViewContainer>
+              <TOAnswerQuestion
+                onPress={() => {
+                  this.setState({ showAnswer: true });
+                }}
+              >
+                <AnswerQuestionText>Answer</AnswerQuestionText>
+              </TOAnswerQuestion>
+            </QuestionAnswerContent>
+            <QuestionAnswerContent>
+              <QuestionAnswerScrollViewContainer>
+                <QuestionAnswerScrollView>
+                  <MainText>{question.answer}</MainText>
+                </QuestionAnswerScrollView>
+              </QuestionAnswerScrollViewContainer>
+              <TOAnswerQuestion
+                onPress={() => {
+                  this.setState({ showAnswer: false });
+                }}
+              >
+                <AnswerQuestionText>Question</AnswerQuestionText>
+              </TOAnswerQuestion>
+            </QuestionAnswerContent>
+          </FlipCard>
         </View>
-        <TOAnswerQuestion
-          onPress={() => {
-            this.setState({ showAnswer: !showAnswer });
-          }}
-        >
-          <AnswerQuestionText>{buttonText}</AnswerQuestionText>
-        </TOAnswerQuestion>
       </MainContent>
     );
   }
@@ -147,7 +175,7 @@ class Quiz extends React.Component {
                 questions.length
               } questions!`}</MainText>
             </View>
-            <ButtonsContainer style={{ marginTop: 25 }}>
+            <ButtonsContainerPortrait style={{ marginTop: 25 }}>
               <TransparentButton onPress={this.resetQuiz}>
                 <Text>Start Over</Text>
               </TransparentButton>
@@ -157,7 +185,7 @@ class Quiz extends React.Component {
               >
                 <Text>Back to Deck</Text>
               </TransparentButton>
-            </ButtonsContainer>
+            </ButtonsContainerPortrait>
           </SummaryContent>
         );
       case 'cards':
@@ -236,8 +264,10 @@ class Quiz extends React.Component {
     const { PORTRAIT } = Orientation;
     const Layout =
       orientation === PORTRAIT ? QuizContentPortrait : QuizContentLandscape;
-    const buttonsContainerJustifyContent =
-      orientation !== PORTRAIT ? 'center' : 'flex-start';
+    const ButtonContainer =
+      orientation !== PORTRAIT
+        ? ButtonsContainerLandscape
+        : ButtonsContainerPortrait;
     const view = this._renderContent();
     return (
       <Layout>
@@ -245,9 +275,7 @@ class Quiz extends React.Component {
           <StyledStepText>{`${step + 1}/${questions.length}`}</StyledStepText>
         </View>
         {view}
-        <ButtonsContainer
-          style={{ justifyContent: buttonsContainerJustifyContent }}
-        >
+        <ButtonContainer>
           <GreenButton onPress={() => this.onBtnPress('correct')}>
             <StyledText>Correct</StyledText>
           </GreenButton>
@@ -257,7 +285,7 @@ class Quiz extends React.Component {
           >
             <StyledText>Incorrect</StyledText>
           </RedButton>
-        </ButtonsContainer>
+        </ButtonContainer>
       </Layout>
     );
   }
@@ -293,11 +321,17 @@ const ListItemHeader = styled.View`
   border-bottom-width: 2px;
 `;
 
-const ButtonsContainer = styled.View`
+const ButtonsContainerPortrait = styled.View`
   align-items: center;
+  justify-content: flex-start;
+  flex: 1;
+  margin-top: 20;
+`;
+const ButtonsContainerLandscape = styled.View`
+  align-items: center;
+  justify-content: center;
   flex: 1;
 `;
-
 const StyledText = styled.Text`
   color: #fff;
   font-size: 18px;
@@ -324,7 +358,7 @@ const AnswerQuestionText = styled.Text`
   font-weight: 700;
 `;
 const TOAnswerQuestion = styled.TouchableOpacity`
-  padding-bottom: 30px;
+  margin-top: 20px;
 `;
 const SummaryView = styled.View`
   flex: 1;
@@ -347,4 +381,17 @@ const QuizContentLandscape = styled.View`
   margin-top: 10px;
   flex: 1;
   flex-direction: row;
+`;
+const QuestionAnswerContent = styled.View`
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+`;
+const QuestionAnswerScrollViewContainer = styled.View`
+  flex-direction: row;
+  flex: 1;
+`;
+const QuestionAnswerScrollView = styled.ScrollView`
+  border: 1px solid;
+  flex: 1;
 `;
